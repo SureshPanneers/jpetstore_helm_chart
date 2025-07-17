@@ -87,7 +87,7 @@ pipeline {
             agent {
                 // Build stage agent definition
                 dockerfile {
-                    filename "${env.CURRENT_DIR}/Dockerfile"
+                    filename "${env.WORKSPACE}/Dockerfile"
                     dir '.'
                     // label 'DOCKER-LINUX'
                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
@@ -102,7 +102,7 @@ pipeline {
                 // Get the repo version
                 script {
                     // Fetch the latest Helm chart version from repository
-                    def chartYaml = readYaml file: "${env.CURRENT_DIR}/chart/Chart.yaml"
+                    def chartYaml = readYaml file: "${env.WORKSPACE}/chart/Chart.yaml"
                     env.CHART_VERSION = chartYaml.version
                     echo "Helm Chart Version: ${env.CHART_VERSION}"
                 }
