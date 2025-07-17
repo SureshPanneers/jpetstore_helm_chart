@@ -99,7 +99,7 @@ pipeline {
                     // Copy the Age key
                     sh """
                         mkdir -p .config/sops/age
-                        cp ${AGE_KEY_FILE} .config/sops/age/keys.txt
+                        cp "$AGE_KEY_FILE" .config/sops/age/keys.txt
                         export SOPS_AGE_KEY_FILE="$(pwd)/.config/sops/age/keys.txt"
                     """
                     
