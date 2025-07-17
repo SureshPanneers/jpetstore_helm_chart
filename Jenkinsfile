@@ -45,7 +45,7 @@ pipeline {
         stage('Prepare Docker Context') {
             steps {
                 script {
-                        sh 'rm -rf docker-context/target/*'
+                        // sh 'rm -rf docker-context/target/*'
                         sh 'mkdir -p docker-context/target'
                         sh "cp Dockerfile2 docker-context/"
                         sh "ls -l docker-context"
