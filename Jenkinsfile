@@ -120,8 +120,7 @@ pipeline {
 
                     // access cluster and deploy application
                     sh """
-                        aws eks update-kubeconfig --region ${env.AWS_REGION} --name ${env.EKS_CLUSTER_NAME} --kubeconfig kubeconfig.yaml
-                        export KUBECONFIG=kubeconfig.yaml
+                        aws eks update-kubeconfig --region ${env.AWS_REGION} --name ${env.EKS_CLUSTER_NAME}
                         helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.WORKSPACE}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.WORKSPACE}/values.yaml -f ${env.WORKSPACE}/secrets.yaml -n jpetstore --wait --timeout 20m0s
                     """
                 }
