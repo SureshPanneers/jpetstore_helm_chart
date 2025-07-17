@@ -84,20 +84,6 @@ pipeline {
             }
 
         stage("Deploy to EKS Cluster") {
-            agent {
-                // Build stage agent definition
-                dockerfile {
-                    filename "${env.WORKSPACE}/Dockerfile"
-                    dir '.'
-                    // label 'DOCKER-LINUX'
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
-            // Check your branch name is not production
-            when {
-                expression { "${ENVIRONMENT}" != 'prod' }
-            }
             steps {
                 // Get the repo version
                 script {
