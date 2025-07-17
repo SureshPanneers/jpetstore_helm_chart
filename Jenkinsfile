@@ -54,7 +54,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                        def ecrRepoUri = "${params.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
+                        def ecrRepoUri = "${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
                         echo "ECR Repo URI: ${ecrRepoUri}"
                         echo "Building Docker image with tag: ${env.DOCKER_TAG}"
                          sh """
@@ -71,7 +71,7 @@ pipeline {
         stage('Push Docker Image to ECR') {
             steps {
                 script {
-                        def ecrRepoUri = "${params.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
+                        def ecrRepoUri = "${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
                         echo "Pushing Docker image with tag: ${env.DOCKER_TAG}"
 
                         sh """
@@ -114,7 +114,7 @@ pipeline {
                     sh "cp ${ageKey} /tmp/.config/sops/age/keys.txt"
                     
                     //// login to ecr
-                    sh "aws ecr get-login-password --region ${env.AWS_REGION} | helm registry login --username AWS --password-stdin ${params.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
+                    sh "aws ecr get-login-password --region ${env.AWS_REGION} | helm registry login --username AWS --password-stdin ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
 
                     sh "cat ${KUBECONFIG}"
                     sh "aws sts get-caller-identity"
@@ -139,7 +139,7 @@ pipeline {
             }
             steps {
                 script {
-                    def ecrRepoUri = "${params.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
+                    def ecrRepoUri = "${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
                     echo "Deleting Docker image with tag: ${env.DOCKER_TAG} from Jenkins instance"
                     sh "docker rmi ${ecrRepoUri}:${env.DOCKER_TAG}"
                     sh "docker image prune -f"
