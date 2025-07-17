@@ -108,9 +108,10 @@ pipeline {
                     pwd  
                     export AWS_REGION=${env.AWS_REGION}
                     export AWS_ACCOUNT_ID=${env.AWS_ACCOUNT_ID}
-                    export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
-                    export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
-                    export AWS_SESSION_TOKEN=$(aws configure get aws_session_token || echo '')  
+                    export AWS_ACCESS_KEY_ID=${aws configure get aws_access_key_id}
+                    export AWS_SECRET_ACCESS_KEY=${aws configure get aws_secret_access_key}
+                    export AWS_SESSION_TOKEN=${aws configure get aws_session_token || echo ''}
+
                     cp ${ageKey} /tmp/.config/sops/age/keys.txt
                     export KUBECONFIG=$KUBECONFIG
                     kubectl create namespace jpetstore || true 
@@ -118,7 +119,7 @@ pipeline {
                     cat ${KUBECONFIG}
                     aws sts get-caller-identity
                     aws eks update-kubeconfig --region ${env.AWS_REGION} --name ${env.EKS_CLUSTER_NAME} --kubeconfig $KUBECONFIG
-                    KUBECONFIG=\$KUBECONFIG helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.WORKSPACE}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.WORKSPACE}/values.yaml -f ${env.WORKSPACE}/secrets.yaml -n jpetstore --wait --timeout 20m0s --debug
+                    helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.WORKSPACE}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.WORKSPACE}/values.yaml -f ${env.WORKSPACE}/secrets.yaml -n jpetstore --kubeconfig $KUBECONFIG --wait --timeout 20m0s --debug
                     """
                 }
             }
