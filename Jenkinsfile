@@ -84,6 +84,16 @@ pipeline {
             }
 
         stage("Deploy to EKS Cluster") {
+            agent {
+                // Build stage agent definition
+                dockerfile {
+                    filename "${env.WORKSPACE}/Dockerfile"
+                    dir '.'
+                    // label 'DOCKER-LINUX'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                    reuseNode true
+                }
+            }            
             steps {
                 // Get the repo version
                 script {
@@ -93,15 +103,11 @@ pipeline {
                     echo "Helm Chart Version: ${env.CHART_VERSION}"
                 }
 
-                withCredentials([file(credentialsId: "${env.ageKey}", variable: 'AGE_KEY_FILE'), file(credentialsId: "${env.kubeconfigFile}", variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: "${env.ageKey}", variable: 'ageKey'), file(credentialsId: "${env.kubeconfigFile}", variable: 'KUBECONFIG')]) {
                     sh 'pwd'
 
                     // Copy the Age key
-                    sh """
-                        mkdir -p .config/sops/age
-                        cp "$AGE_KEY_FILE" .config/sops/age/keys.txt
-                        export SOPS_AGE_KEY_FILE="$(pwd)/.config/sops/age/keys.txt"
-                    """
+                    sh "cp ${ageKey} /tmp/.config/sops/age/keys.txt"
                     
                     //// login to ecr
                     sh "aws ecr get-login-password --region ${env.AWS_REGION} | helm registry login --username AWS --password-stdin ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
