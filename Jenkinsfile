@@ -19,6 +19,7 @@ pipeline {
         TIMESTAMP = new Date().format("yyyyMMddHHmmss")
         DOCKER_TAG = "jpetstore-${TIMESTAMP}"
         AWS_ACCOUNT_ID = "189693864407"
+        AWS_CREDENTIALS = "aws_credentials_eks"
         
     }
 
@@ -103,8 +104,17 @@ pipeline {
                     echo "Helm Chart Version: ${env.CHART_VERSION}"
                 }
 
-                withCredentials([file(credentialsId: "${env.ageKey}", variable: 'ageKey'), file(credentialsId: "${env.kubeconfigFile}", variable: 'KUBECONFIG')]) {
+                withCredentials([
+                    file(credentialsId: "${env.ageKey}", variable: 'AGE_KEY'),
+                    file(credentialsId: "${env.kubeconfigFile}", variable: 'KUBECONFIG'),
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: "${env.AWS_CREDENTIALS}", 
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']
+                ]) {
                     sh """ 
+                    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                     pwd  
                     cp ${ageKey} /tmp/.config/sops/age/keys.txt
                     export KUBECONFIG=$KUBECONFIG
