@@ -97,6 +97,7 @@ pipeline {
                     sh 'pwd'
 
                     // Copy the Age key
+                    sh "mkdir -p /tmp/.config/sops/age"
                     sh "cp ${ageKey} /tmp/.config/sops/age/keys.txt"
                     
                     //// login to ecr
