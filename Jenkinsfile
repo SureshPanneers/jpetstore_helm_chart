@@ -50,7 +50,8 @@ pipeline {
                         echo "Building Docker image with tag: ${env.DOCKER_TAG}"
                          sh """
                                 mkdir -p docker-context/target
-                                cp Dockerfile2 docker-context/
+                                ls -l ${env.WORKSPACE}
+                                cp ${env.WORKSPACE}/Dockerfile2 docker-context/
                                 cp -R target/* docker-context/target/
                                 docker build -t ${ecrRepoUri}:${DOCKER_TAG} docker-context -f docker-context/Dockerfile2 --no-cache
                             """
