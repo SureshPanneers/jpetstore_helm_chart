@@ -9,7 +9,7 @@ pipeline {
     environment {
         GIT_REPO = 'https://github.com/kavita1205/JPetStore'
         BRANCH = 'main'
-        CURRENT_DIR = "jpetstore_helm_chart"        
+        CURRENT_DIR = "jpetstore_gitrepo"        
         DOCKER_ECR_REPO_NAME = "jpetstore"
         HELM_ECR_REPO_NAME = 'jpetstore'
         kubeconfigFile = 'jenkins-eks-credentials-cluster'     
@@ -47,7 +47,7 @@ pipeline {
                 script {
                         // sh 'rm -rf docker-context/target/*'
                         sh 'mkdir -p docker-context/target'
-                        sh "cp Dockerfile2 docker-context/"
+                        sh "cp ${CURRENT_DIR}/Dockerfile2 docker-context/"
                         sh "ls -l docker-context"
                         stash includes: 'docker-context/**', name: 'docker-context'
                     }
