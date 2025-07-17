@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        GIT_REPO = 'https://github.com/kavita1205/JPetStore'
+        GIT_REPO = 'https://github.com/kavita1205/jpetstore_helm_chart.git'
         BRANCH = 'main'
         CURRENT_DIR = "jpetstore_gitrepo"        
         DOCKER_ECR_REPO_NAME = "jpetstore"
