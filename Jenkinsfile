@@ -108,6 +108,9 @@ pipeline {
 
                     // Copy the Age key
                     sh "cp ${ageKey} /tmp/.config/sops/age/keys.txt"
+
+                    // create namespace
+                    sh "kubectl create namespace jpetstore > /dev/null 2>&1 || true " 
                     
                     //// login to ecr
                     sh "aws ecr get-login-password --region ${env.AWS_REGION} | helm registry login --username AWS --password-stdin ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
@@ -119,7 +122,7 @@ pipeline {
                     sh """
                         aws eks update-kubeconfig --region ${env.AWS_REGION} --name ${env.EKS_CLUSTER_NAME} --kubeconfig kubeconfig.yaml
                         export KUBECONFIG=kubeconfig.yaml
-                        helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.CURRENT_DIR}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.CURRENT_DIR}/values.yaml -f ${env.CURRENT_DIR}/secrets.yaml -n digital-apps-${params.ENVIRONMENT} --wait --timeout 20m0s
+                        helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.WORKSPACE}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.WORKSPACE}/values.yaml -f ${env.WORKSPACE}/secrets.yaml -n jpetstore --wait --timeout 20m0s
                     """
                 }
             }
