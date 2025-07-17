@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig":
+      { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:483381550851:certificate/c1ebd991-2cbc-4387-a7a1-561ab52df7be
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "15"
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/success-codes: "200"
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/ssl-policy: 'ELBSecurityPolicy-TLS13-1-2-2021-06'
+    alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=300,load_balancing.algorithm.type=round_robin
+    kubernetes.io/ingress.class: alb
+  finalizers:
+  - ingress.k8s.aws/resources
+  generation: 1
+  labels:
+    app.kubernetes.io/app: intl-litprolibrary
+    app.kubernetes.io/environment: dev
+  name: intl-litprolibrary
+  namespace: digital-apps-dev
+spec:
+  ingressClassName: alb
+  rules:
+  - host: dev-lpl.scholasticlearningzone.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: intl-litprolibrary
+            port:
+              number: 8180
+        path: /
+        pathType: Prefix
