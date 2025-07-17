@@ -93,13 +93,14 @@ pipeline {
                     echo "Helm Chart Version: ${env.CHART_VERSION}"
                 }
 
-                withCredentials([file(credentialsId: "${env.ageKey}", variable: 'ageKey'), file(credentialsId: "${env.kubeconfigFile}", variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: "${env.ageKey}", variable: 'AGE_KEY_FILE'), file(credentialsId: "${env.kubeconfigFile}", variable: 'KUBECONFIG')]) {
                     sh 'pwd'
 
                     // Copy the Age key
                     sh """
-                            mkdir -p \$HOME/.config/sops/age
-                            cp ${ageKey} \$HOME/.config/sops/age/keys.txt
+                        mkdir -p .config/sops/age
+                        cp ${AGE_KEY_FILE} .config/sops/age/keys.txt
+                        export SOPS_AGE_KEY_FILE="$(pwd)/.config/sops/age/keys.txt"
                     """
                     
                     //// login to ecr
