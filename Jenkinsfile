@@ -116,7 +116,7 @@ pipeline {
                     export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
                     export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                     pwd  
-                    cp ${ageKey} /tmp/.config/sops/age/keys.txt
+                    cp ${AGE_KEY} /tmp/.config/sops/age/keys.txt
                     export KUBECONFIG=$KUBECONFIG
                     kubectl create namespace jpetstore || true 
                     aws ecr get-login-password --region ${env.AWS_REGION} | helm registry login --username AWS --password-stdin ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com
