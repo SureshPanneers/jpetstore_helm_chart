@@ -43,17 +43,8 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            agent {
-                docker {
-                    // label 'DOCKER-LINUX'
-                    reuseNode true
-                    image 'docker:latest'
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
                 script {
-                        unstash 'docker-context'
                         def ecrRepoUri = "${params.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
                         echo "ECR Repo URI: ${ecrRepoUri}"
                         echo "Building Docker image with tag: ${env.DOCKER_TAG}"
