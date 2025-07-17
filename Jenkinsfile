@@ -87,7 +87,7 @@ pipeline {
             agent {
                 // Build stage agent definition
                 dockerfile {
-                    filename "${env.WORKSPACE}/Dockerfile"
+                    filename "Dockerfile"
                     dir '.'
                     // label 'DOCKER-LINUX'
                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
