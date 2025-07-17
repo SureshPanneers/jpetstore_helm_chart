@@ -24,15 +24,24 @@ pipeline {
 
     options {
         // Build options
+        skipDefaultCheckout(true) // prevent double-checkout
         buildDiscarder(logRotator(numToKeepStr: '3'))
         disableConcurrentBuilds()
         timeout(time: 30, unit: 'MINUTES')
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('Checkout Code') {
             steps {
                 git branch: "${BRANCH}", url: "${GIT_REPO}"
+                sh 'ls -al' // Debug: check what files are checked out
+                sh 'git status'
             }
         }
 
