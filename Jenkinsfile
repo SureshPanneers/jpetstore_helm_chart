@@ -97,8 +97,10 @@ pipeline {
                     sh 'pwd'
 
                     // Copy the Age key
-                    sh "mkdir -p /tmp/.config/sops/age"
-                    sh "cp ${ageKey} /tmp/.config/sops/age/keys.txt"
+                    sh """
+                            mkdir -p \$HOME/.config/sops/age
+                            cp ${ageKey} \$HOME/.config/sops/age/keys.txt
+                    """
                     
                     //// login to ecr
                     sh "aws ecr get-login-password --region ${env.AWS_REGION} | helm registry login --username AWS --password-stdin ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
