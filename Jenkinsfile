@@ -104,24 +104,16 @@ pipeline {
                 }
 
                 withCredentials([file(credentialsId: "${env.ageKey}", variable: 'ageKey'), file(credentialsId: "${env.kubeconfigFile}", variable: 'KUBECONFIG')]) {
-                    sh 'pwd'
-
-                    // Copy the Age key
-                    sh "cp ${ageKey} /tmp/.config/sops/age/keys.txt"
-
-                    // create namespace
-                    sh "kubectl create namespace jpetstore > /dev/null 2>&1 || true " 
-                    
-                    //// login to ecr
-                    sh "aws ecr get-login-password --region ${env.AWS_REGION} | helm registry login --username AWS --password-stdin ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com"
-
-                    sh "cat ${KUBECONFIG}"
-                    sh "aws sts get-caller-identity"
-
-                    // access cluster and deploy application
-                    sh """
-                        aws eks update-kubeconfig --region ${env.AWS_REGION} --name ${env.EKS_CLUSTER_NAME} --kubeconfig $KUBECONFIG
-                        helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.WORKSPACE}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.WORKSPACE}/values.yaml -f ${env.WORKSPACE}/secrets.yaml -n jpetstore --wait --timeout 20m0s --kubeconfig $KUBECONFIG
+                    sh """ 
+                    pwd    
+                    cp ${ageKey} /tmp/.config/sops/age/keys.txt
+                    export KUBECONFIG=$KUBECONFIG
+                    kubectl create namespace jpetstore || true 
+                    aws ecr get-login-password --region ${env.AWS_REGION} | helm registry login --username AWS --password-stdin ${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com
+                    cat ${KUBECONFIG}
+                    aws sts get-caller-identity
+                    aws eks update-kubeconfig --region ${env.AWS_REGION} --name ${env.EKS_CLUSTER_NAME} --kubeconfig $KUBECONFIG
+                    helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.WORKSPACE}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.WORKSPACE}/values.yaml -f ${env.WORKSPACE}/secrets.yaml -n jpetstore --wait --timeout 20m0s
                     """
                 }
             }
