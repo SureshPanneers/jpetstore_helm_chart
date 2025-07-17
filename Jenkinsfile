@@ -129,14 +129,6 @@ pipeline {
         }
 
         stage('Delete the used docker image') {
-            agent {
-                docker {
-                    // label 'DOCKER-LINUX'
-                    image "docker"
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                    reuseNode true
-                }
-            }
             steps {
                 script {
                     def ecrRepoUri = "${env.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
