@@ -108,11 +108,12 @@ pipeline {
                     sh "cat ${KUBECONFIG}"
                     sh "aws sts get-caller-identity"
 
-                    // access cluster
-                    sh "aws eks update-kubeconfig --region ${env.AWS_REGION} --name ${env.EKS_CLUSTER_NAME}"
-                    
-                    //decrypt secret key and deploy LPL
-                    sh "helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.CURRENT_DIR}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.CURRENT_DIR}/values.yaml -f ${env.CURRENT_DIR}/secrets.yaml -n digital-apps-${params.ENVIRONMENT} --wait --timeout 20m0s"
+                    // access cluster and deploy application
+                    sh """
+                        aws eks update-kubeconfig --region ${env.AWS_REGION} --name ${env.EKS_CLUSTER_NAME} --kubeconfig kubeconfig.yaml
+                        export KUBECONFIG=kubeconfig.yaml
+                        helm secrets upgrade --install ${env.HELM_ECR_REPO_NAME} ${env.CURRENT_DIR}/chart --set ecr.tag=${env.DOCKER_TAG} --set environment=${params.ENVIRONMENT} --version ${env.CHART_VERSION} -f ${env.CURRENT_DIR}/values.yaml -f ${env.CURRENT_DIR}/secrets.yaml -n digital-apps-${params.ENVIRONMENT} --wait --timeout 20m0s
+                    """
                 }
             }
         }
