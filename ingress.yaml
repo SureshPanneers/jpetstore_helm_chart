@@ -22,19 +22,19 @@ metadata:
   - ingress.k8s.aws/resources
   generation: 1
   labels:
-    app.kubernetes.io/app: intl-litprolibrary
+    app.kubernetes.io/app: jpetstore
     app.kubernetes.io/environment: dev
-  name: intl-litprolibrary
-  namespace: digital-apps-dev
+  name: jpetstore
+  namespace: jpetstore
 spec:
   ingressClassName: alb
   rules:
-  - host: dev-lpl.scholasticlearningzone.com
+  - host: jpetstore.com
     http:
       paths:
       - backend:
           service:
-            name: intl-litprolibrary
+            name: jpetstore
             port:
               number: 8180
         path: /

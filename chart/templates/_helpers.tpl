@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "jpetstore_helm_chart.name" -}}
+{{- define "jpetstore-helm-chart.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "jpetstore_helm_chart.fullname" -}}
+{{- define "jpetstore-helm-chart.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "jpetstore_helm_chart.chart" -}}
+{{- define "jpetstore-helm-chart.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "jpetstore_helm_chart.labels" -}}
-helm.sh/chart: {{ include "jpetstore_helm_chart.chart" . }}
-{{ include "jpetstore_helm_chart.selectorLabels" . }}
+{{- define "jpetstore-helm-chart.labels" -}}
+helm.sh/chart: {{ include "jpetstore-helm-chart.chart" . }}
+{{ include "jpetstore-helm-chart.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,8 +46,8 @@ app.kubernetes.io/environment: {{ .Values.environment | quote}}
 {{/*
 Selector labels
 */}}
-{{- define "jpetstore_helm_chart.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "jpetstore_helm_chart.name" . }}
+{{- define "jpetstore-helm-chart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "jpetstore-helm-chart.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/app: {{ .Values.applicationProperties.app | quote}}
 {{- end }}
@@ -55,9 +55,9 @@ app.kubernetes.io/app: {{ .Values.applicationProperties.app | quote}}
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "jpetstore_helm_chart.serviceAccountName" -}}
+{{- define "jpetstore-helm-chart.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "jpetstore_helm_chart.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "jpetstore-helm-chart.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

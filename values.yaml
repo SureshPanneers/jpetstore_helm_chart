@@ -1,4 +1,4 @@
-# Default values for jpetstore_helm_chart.
+# Default values for jpetstore-helm-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
