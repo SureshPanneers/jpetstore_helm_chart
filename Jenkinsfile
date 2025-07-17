@@ -42,19 +42,6 @@ pipeline {
             }
         }
 
-        stage('Prepare Docker Context') {
-            steps {
-                script {
-                        // sh 'rm -rf docker-context/target/*'
-                        sh 'mkdir -p docker-context/target'
-                        sh "cp ${CURRENT_DIR}/Dockerfile2 docker-context/"
-                        sh "ls -l docker-context"
-                        stash includes: 'docker-context/**', name: 'docker-context'
-                    }
-
-                }
-            }
-
         stage('Build Docker Image') {
             agent {
                 docker {
@@ -70,10 +57,15 @@ pipeline {
                         def ecrRepoUri = "${params.AWS_ACCOUNT_ID}.dkr.ecr.${env.AWS_REGION}.amazonaws.com/${env.DOCKER_ECR_REPO_NAME}"
                         echo "ECR Repo URI: ${ecrRepoUri}"
                         echo "Building Docker image with tag: ${env.DOCKER_TAG}"
-                        sh "docker build -t ${ecrRepoUri}:${env.DOCKER_TAG} docker-context -f docker-context/Dockerfile2 --no-cache"
+                         sh """
+                                mkdir -p docker-context/target
+                                cp Dockerfile2 docker-context/
+                                cp -R target/* docker-context/target/
+                                docker build -t ${ecrRepoUri}:${DOCKER_TAG} docker-context -f docker-context/Dockerfile2 --no-cache
+                            """
+                    }
                 }
             }
-        }
 
         stage('Push Docker Image to ECR') {
             steps {
