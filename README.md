@@ -74,7 +74,9 @@ sudo yum install docker
    kubectl get deployment -n kube-system aws-load-balancer-controller
    kubectl describe po -n kube-system aws-load-balancer-controller
 ```
+![alt text](jpetstore_application_snapshot.png)
 
+![alt text](Jenkins_CICD.png)
 ---
 
 
