@@ -1,4 +1,4 @@
-# Cisco Demo Project Documentation for WAR Deployment to EKS Clusters
+# Project Documentation for WAR Deployment to EKS Clusters
 
 ---
 
